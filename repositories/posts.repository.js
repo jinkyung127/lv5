@@ -1,25 +1,48 @@
 // repositories/posts.repository.js
 
-const { Posts } = require("../models");
+const { posts } = require("../models");
+const { Op } = require("sequelize");
 
 class PostRepository {
   findAllPost = async () => {
-    // ORM인 Sequelize에서 Posts 모델의 findAll 메소드를 사용해 데이터를 요청합니다.
-    const posts = await Posts.findAll();
+    const allPosts = await posts.findAll();
 
-    return posts;
+    return allPosts;
   };
 
-  createPost = async (nickname, password, title, content) => {
-    // ORM인 Sequelize에서 Posts 모델의 create 메소드를 사용해 데이터를 요청합니다.
-    const createPostData = await Posts.create({
-      nickname,
-      password,
+  findPostById = async (postId) => {
+    const post = await posts.findByPk(postId);
+
+    return post;
+  };
+
+  createPost = async (id, title, content) => {
+    console.log(title);
+
+    const createPostData = await posts.create({
+      userId: id,
       title,
       content,
     });
 
     return createPostData;
+  };
+
+  updatePost = async (user, postId, title, content) => {
+    const updatePostData = await posts.update(
+      { title, content },
+      { where: { [Op.and]: [{ userId: user.id }, { id: postId }] } }
+    );
+
+    return updatePostData;
+  };
+
+  deletePost = async (user, postId) => {
+    const updatePostData = await posts.destroy({
+      where: { [Op.and]: [{ userId: user.id }, { id: postId }] },
+    });
+
+    return updatePostData;
   };
 }
 

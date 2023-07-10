@@ -1,35 +1,40 @@
 const UserRepository = require("../repositories/users.repository");
+const jwt = require("jsonwebtoken");
 
 class UserService {
-  userRepository = new userRepository();
-
-  findOneUser = async () => {
-    // 저장소(Repository)에게 데이터를 요청합니다.
-    const foundUser = await this.userRepository.findOneUser();
-
-    // 비즈니스 로직을 수행한 후 사용자에게 보여줄 데이터를 가공합니다.
-    return {
-      userId: foundUser.id,
-      nickname: foundUser.nickname,
-      createdAt: foundUser.createdAt,
-      updatedAt: foundUser.updatedAt,
-    };
-  };
+  userRepository = new UserRepository();
 
   createUser = async (nickname, password) => {
-    // 저장소(Repository)에게 데이터를 요청합니다.
     const createUserData = await this.userRepository.createUser(
       nickname,
       password
     );
 
-    // 비즈니스 로직을 수행한 후 사용자에게 보여줄 데이터를 가공합니다.
     return {
       userId: createUserData.id,
       nickname: createUserData.nickname,
       createdAt: createUserData.createdAt,
       updatedAt: createUserData.updatedAt,
     };
+  };
+
+  findUserById = async (id) => {
+    const findUser = await this.userRepository.findUserById(id);
+
+    return {
+      userId: findUser.id,
+      nickname: findUser.nickname,
+      createdAt: findUser.createdAt,
+      updatedAt: findUser.updatedAt,
+    };
+  };
+
+  loginUser = async (nickname, password) => {
+    const user = await this.userRepository.findLoginUser(nickname, password);
+
+    const token = jwt.sign({ userId: user.id }, process.env.COOKIE_SECRET);
+
+    return token;
   };
 }
 
