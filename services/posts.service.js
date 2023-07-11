@@ -79,15 +79,7 @@ class PostService {
 
     await this.postRepository.deletePost(user, postId);
 
-    return {
-      userId: user.id,
-      postId: findPost.postId,
-      nickname: findPost.nickname,
-      title: findPost.title,
-      content: findPost.content,
-      createdAt: findPost.createdAt,
-      updatedAt: findPost.updatedAt,
-    };
+    return true;
   };
 }
 
