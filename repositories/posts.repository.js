@@ -17,8 +17,6 @@ class PostRepository {
   };
 
   createPost = async (id, title, content) => {
-    console.log(title);
-
     const createPostData = await posts.create({
       userId: id,
       title,
